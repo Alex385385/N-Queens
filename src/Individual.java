@@ -3,8 +3,12 @@ public class Individual {
     private int fitness;
 
     public Individual(int[] array) {
-        this.array = array;
+        this.array = array.clone();
         this.fitness = fitness(array);
+    }
+
+    public Individual() {
+
     }
 
     public int[] getArray() {
