@@ -3,7 +3,21 @@ import java.util.ArrayList;
 
 public class NQueen {
 
-    public void SimAnnealing(int[] problem) {
+    public int[] SimAnnealing(int[] problem) {
+        Individual current = new Individual(problem);
+
+
+        while(true) {
+
+            if(t == 0) {
+                return current.getArray();
+            }
+
+            int deltaE = next.getFitness() - current.getFitness();
+            if(deltaE > 0) {
+                current = next;
+            }
+        }
 
     }
 
@@ -20,11 +34,25 @@ public class NQueen {
                 child = new Individual(reproduce(x, y));
                 new_population.add(child);
             }
-            population.addAll(new_population);
-            counter++;
-        } while (counter == 20);
+            population = new ArrayList<>(new_population);
+            Individual solution = searchSolution(population);
 
-        return population.get(0);
+            if(solution != null){
+                return solution;
+            }
+            counter++;
+        } while (counter == 100);
+
+        return null;
+    }
+
+    private Individual searchSolution(ArrayList<Individual> population) {
+        for (int i = 0; i < population.size(); i++) {
+            if(population.get(i).getFitness() == 0) {
+                return population.get(i);
+            }
+        }
+        return null;
     }
 
     private int[] reproduce(int[] x, int[] y) {
