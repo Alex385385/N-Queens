@@ -2,8 +2,9 @@ import java.util.Random;
 import java.util.ArrayList;
 
 public class NQueen {
+    private int smallest = 1000000;
 
-    public int[] SimAnnealing(int[] problem) {
+   /* public int[] SimAnnealing(int[] problem) {
         Individual current = new Individual(problem);
 
 
@@ -21,6 +22,8 @@ public class NQueen {
 
     }
 
+    */
+
     public Individual GeneticAlg(ArrayList<Individual> population) {
         Random rd = new Random();
         int counter = 0;
@@ -29,21 +32,47 @@ public class NQueen {
             ArrayList<Individual> new_population= new ArrayList<>();
             for (int i = 0; i < population.size(); i++) {
                 Individual child;
-                int[] x = population.get(rd.nextInt(population.size())).getArray().clone();
-                int[] y = population.get(rd.nextInt(population.size())).getArray().clone();
-                child = new Individual(reproduce(x, y));
+                //int[] x = population.get(rd.nextInt(population.size())).getArray().clone();
+                //int[] y = population.get(rd.nextInt(population.size())).getArray().clone();
+                int[] x = randomSelection(population);
+                int[] y = randomSelection(population);
+                child = new Individual(reproduce(x, y).clone());
                 new_population.add(child);
             }
             population = new ArrayList<>(new_population);
-            Individual solution = searchSolution(population);
+            //Individual solution = searchSolution(population);
 
-            if(solution != null){
-                return solution;
+            for (int i = 0; i < population.size(); i++) {
+                if (population.get(i).getFitness() == 0) {
+                    return population.get(i);
+                }
             }
+
+            //if(solution != null){
+            //    return solution;
+            //}
             counter++;
-        } while (counter == 100);
+        } while(counter < 200);
 
         return null;
+    }
+
+    private int[] randomSelection(ArrayList<Individual> population) {
+        int[] randomSample = new int[25];
+        Random rd = new Random();
+        for(int i = 0; i < randomSample.length; i++) {
+            randomSample[i] = rd.nextInt(population.size());
+        }
+
+        Individual parent = new Individual(population.get(randomSample[0]).getArray().clone());
+
+        for(int i = 0; i < randomSample.length; i++) {
+            if(parent.getFitness() > population.get(randomSample[i]).getFitness()) {
+                parent = new Individual(population.get(randomSample[i]).getArray().clone());
+            }
+        }
+
+        return parent.getArray();
     }
 
     private Individual searchSolution(ArrayList<Individual> population) {
@@ -51,26 +80,30 @@ public class NQueen {
             if(population.get(i).getFitness() == 0) {
                 return population.get(i);
             }
+            else if(population.get(i).getFitness() < smallest) {
+                smallest = population.get(i).getFitness();
+            }
         }
         return null;
     }
 
     private int[] reproduce(int[] x, int[] y) {
         Random rd = new Random();
-        int[] copy = new int[x.length];
+        Random mutate = new Random();
+        int[] copy = new int[25];
 
-        int n = x.length;
+        int n = 25;
         int c = rd.nextInt(n);
 
         for(int i = 0; i < c; i ++) {
             copy[i] = x[i];
         }
 
-        for(int i = c; i < x.length; i++) {
-            copy[i] = y[i];
+        for(int j = c; j < 25; j++) {
+            copy[j] = y[j];
         }
 
-        if(rd.nextInt(101) < 50) {
+        if(mutate.nextInt(101) < 35) {
             copy = mutate(copy).clone();
         }
 
@@ -79,11 +112,15 @@ public class NQueen {
 
     private int[] mutate(int[] child) {
         Random rd = new Random();
-        int index = rd.nextInt(child.length);
-        int number = rd.nextInt(child.length);
+        int index = rd.nextInt(25);
+        int number = rd.nextInt(25);
 
         child[index] = number;
 
         return child;
+    }
+
+    public int getSmallest() {
+        return smallest;
     }
 }
