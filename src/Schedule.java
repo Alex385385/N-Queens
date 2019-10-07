@@ -1,6 +1,6 @@
 public class Schedule {
 
     public double getT(double t) {
-        return (1 - (0.0006 * t));
+        return (500 - (0.00006 * t));
     }
 }

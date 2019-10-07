@@ -4,31 +4,32 @@ import java.util.ArrayList;
 public class NQueen {
     private int smallest = 1000000;
 
-    public int[] SimAnnealing(int[] problem) {
+    public Individual SimAnnealing(int[] problem) {
         Random rd = new Random();
         Individual current = new Individual(problem);
         Individual next;
         Schedule sd = new Schedule();
         double T;
-
-        long temp = System.nanoTime();
+        int littleT = 1;
 
         while(true) {
 
-            T = sd.getT(temp);
+            T = sd.getT(littleT);
 
-            if(T == 0) {
-                return current.getArray();
+            if(T <= 0 || current.getFitness() == 0) {
+                return current;
             }
 
             next = new Individual(mutate(current.getArray()));
-            int deltaE = next.getFitness() - current.getFitness();
+            int deltaE = next.getFitness() - current.getFitness() ;
             if(deltaE < 0) {
                 current = next;
             }
-            else if(rd.nextFloat() < Math.exp((deltaE/T))) {
+            else if(rd.nextFloat() > Math.exp((deltaE/T))) {
                 current = next;
             }
+
+            littleT++;
         }
     }
 
@@ -61,7 +62,7 @@ public class NQueen {
             //    return solution;
             //}
             counter++;
-        } while(counter < 200);
+        } while(counter < 1000);
 
         return null;
     }

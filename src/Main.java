@@ -6,11 +6,22 @@ public class Main {
     public static void main(String[] args) {
         Random rd = new Random();
         NQueen nq = new NQueen();
+        NQueen sa = new NQueen();
         Individual id = new Individual();
         ArrayList<Individual> population = new ArrayList<>();
 
         //int[] array2 = {17,22,6,8,3,5,16,21,10,24,2,4,18,14,11,1,23,20,13,7,9,15,12,19,1};
         //Individual is = new Individual(array2);
+        int[] array2 = new int[25];
+        int[] array3 = new int[25];
+
+        for (int j = 0; j < array2.length; j++) {
+            array2[j] = rd.nextInt(25);
+        }
+
+        id = sa.SimAnnealing(array2);
+
+
 
         int[] array = new int[25];
 
