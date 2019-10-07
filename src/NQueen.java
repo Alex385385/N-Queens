@@ -9,28 +9,33 @@ public class NQueen {
         Individual current = new Individual(problem);
         Individual next;
         Schedule sd = new Schedule();
-        double T;
-        int littleT = 1;
 
-        while(true) {
+        double littleT = 2.0;
+        double T = 1/(Math.log10(littleT));
 
-            T = sd.getT(littleT);
+        while(T >= 0 || current.getFitness() == 0) {
 
-            if(T <= 0 || current.getFitness() == 0) {
-                return current;
-            }
+            //T = sd.getT(littleT);
+
+            //if(T <= 0 || current.getFitness() == 0) {
+            //    return current;
+            //}
 
             next = new Individual(mutate(current.getArray()));
             int deltaE = next.getFitness() - current.getFitness() ;
-            if(deltaE < 0) {
+            if(deltaE > 0) {
                 current = next;
             }
-            else if(rd.nextFloat() > Math.exp((deltaE/T))) {
+            else if(rd.nextFloat() <= Math.exp((deltaE/T))) {
                 current = next;
             }
 
-            littleT++;
+            littleT = littleT + 1.0;
+
+            T = 1/(Math.log10(littleT));
         }
+
+        return current;
     }
 
 
