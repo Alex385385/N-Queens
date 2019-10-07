@@ -10,32 +10,34 @@ public class NQueen {
         Individual next;
         Schedule sd = new Schedule();
 
-        double littleT = 2.0;
-        double T = 1/(Math.log10(littleT));
+        //double littleT = 2.0;
+        //double T = 1/(Math.log10(littleT));
+        double temp = 1;
 
-        while(T >= 0 || current.getFitness() == 0) {
+        while(true) {
 
             //T = sd.getT(littleT);
 
-            //if(T <= 0 || current.getFitness() == 0) {
-            //    return current;
-            //}
+            if(temp <= 0.0000001 && current.getFitness() == 0) {
+                return current;
+            }
 
             next = new Individual(mutate(current.getArray()));
-            int deltaE = next.getFitness() - current.getFitness() ;
+            int deltaE = current.getFitness() - next.getFitness() ;
             if(deltaE > 0) {
                 current = next;
             }
-            else if(rd.nextFloat() <= Math.exp((deltaE/T))) {
+            else if(Math.random() <= Math.exp((deltaE/temp))) {
                 current = next;
             }
 
-            littleT = littleT + 1.0;
+            temp *= 1 - deltaE;
 
-            T = 1/(Math.log10(littleT));
+            //littleT = littleT + 500.0;
+            //T = 1/(Math.log10(littleT));
         }
 
-        return current;
+        //return current;
     }
 
 
