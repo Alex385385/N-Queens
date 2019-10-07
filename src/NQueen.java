@@ -4,25 +4,34 @@ import java.util.ArrayList;
 public class NQueen {
     private int smallest = 1000000;
 
-   /* public int[] SimAnnealing(int[] problem) {
+    public int[] SimAnnealing(int[] problem) {
+        Random rd = new Random();
         Individual current = new Individual(problem);
+        Individual next;
+        Schedule sd = new Schedule();
+        double T;
 
+        long temp = System.nanoTime();
 
         while(true) {
 
-            if(t == 0) {
+            T = sd.getT(temp);
+
+            if(T == 0) {
                 return current.getArray();
             }
 
+            next = new Individual(mutate(current.getArray()));
             int deltaE = next.getFitness() - current.getFitness();
-            if(deltaE > 0) {
+            if(deltaE < 0) {
+                current = next;
+            }
+            else if(rd.nextFloat() < Math.exp((deltaE/T))) {
                 current = next;
             }
         }
-
     }
 
-    */
 
     public Individual GeneticAlg(ArrayList<Individual> population) {
         Random rd = new Random();
