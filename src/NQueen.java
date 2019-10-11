@@ -1,24 +1,22 @@
+import java.lang.Math;
 import java.util.Random;
 import java.util.ArrayList;
 
 public class NQueen {
-    private int smallest = 1000000;
-
     public Individual SimAnnealing(int[] problem) {
         Random rd = new Random();
         Individual current = new Individual(problem);
         Individual next;
         Schedule sd = new Schedule();
 
-        //double littleT = 2.0;
-        //double T = 1/(Math.log10(littleT));
-        double temp = 1;
+        double littleT = 1.0;
+        double T;
 
         while(true) {
 
-            //T = sd.getT(littleT);
+            T = sd.getT(littleT);
 
-            if(temp <= 0.0000001 && current.getFitness() == 0) {
+            if(T <= 0.0 || current.getFitness() == 0) {
                 return current;
             }
 
@@ -27,17 +25,12 @@ public class NQueen {
             if(deltaE > 0) {
                 current = next;
             }
-            else if(Math.random() <= Math.exp((deltaE/temp))) {
+            else if(Math.random() <= Math.exp((deltaE/T))) {
                 current = next;
             }
 
-            temp *= 1 - deltaE;
-
-            //littleT = littleT + 500.0;
-            //T = 1/(Math.log10(littleT));
+            littleT++;
         }
-
-        //return current;
     }
 
 
@@ -49,25 +42,18 @@ public class NQueen {
             ArrayList<Individual> new_population= new ArrayList<>();
             for (int i = 0; i < population.size(); i++) {
                 Individual child;
-                //int[] x = population.get(rd.nextInt(population.size())).getArray().clone();
-                //int[] y = population.get(rd.nextInt(population.size())).getArray().clone();
                 int[] x = randomSelection(population);
                 int[] y = randomSelection(population);
                 child = new Individual(reproduce(x, y).clone());
                 new_population.add(child);
             }
             population = new ArrayList<>(new_population);
-            //Individual solution = searchSolution(population);
-
             for (int i = 0; i < population.size(); i++) {
                 if (population.get(i).getFitness() == 0) {
                     return population.get(i);
                 }
             }
 
-            //if(solution != null){
-            //    return solution;
-            //}
             counter++;
         } while(counter < 1000);
 
@@ -96,9 +82,6 @@ public class NQueen {
         for (int i = 0; i < population.size(); i++) {
             if(population.get(i).getFitness() == 0) {
                 return population.get(i);
-            }
-            else if(population.get(i).getFitness() < smallest) {
-                smallest = population.get(i).getFitness();
             }
         }
         return null;
@@ -135,9 +118,5 @@ public class NQueen {
         child[index] = number;
 
         return child;
-    }
-
-    public int getSmallest() {
-        return smallest;
     }
 }
